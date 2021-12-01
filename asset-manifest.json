@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.js": "/ExrKDT-mobx-basket/static/js/main.ef8d3e5a.chunk.js",
+    "main.js.map": "/ExrKDT-mobx-basket/static/js/main.ef8d3e5a.chunk.js.map",
+    "runtime-main.js": "/ExrKDT-mobx-basket/static/js/runtime-main.e544b48d.js",
+    "runtime-main.js.map": "/ExrKDT-mobx-basket/static/js/runtime-main.e544b48d.js.map",
+    "static/css/2.a75f5a2c.chunk.css": "/ExrKDT-mobx-basket/static/css/2.a75f5a2c.chunk.css",
+    "static/js/2.e887fedc.chunk.js": "/ExrKDT-mobx-basket/static/js/2.e887fedc.chunk.js",
+    "static/js/2.e887fedc.chunk.js.map": "/ExrKDT-mobx-basket/static/js/2.e887fedc.chunk.js.map",
+    "index.html": "/ExrKDT-mobx-basket/index.html",
+    "static/css/2.a75f5a2c.chunk.css.map": "/ExrKDT-mobx-basket/static/css/2.a75f5a2c.chunk.css.map",
+    "static/js/2.e887fedc.chunk.js.LICENSE.txt": "/ExrKDT-mobx-basket/static/js/2.e887fedc.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e544b48d.js",
+    "static/css/2.a75f5a2c.chunk.css",
+    "static/js/2.e887fedc.chunk.js",
+    "static/js/main.ef8d3e5a.chunk.js"
+  ]
+}
