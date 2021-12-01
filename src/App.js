@@ -1,24 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.css";
+import { Provider } from "mobx-react";
+import Mart from "./components/Mart";
+import MarketStore from "./store/MarketStore";
+
+// 스토어 생성
+const marketStore = new MarketStore();
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider className="App" market={marketStore}>
+      <Mart />
+    </Provider>
   );
 }
 
