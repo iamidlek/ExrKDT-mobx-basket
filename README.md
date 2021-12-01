@@ -1,70 +1,117 @@
-# Getting Started with Create React App
+# mobx 사용 해보기
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- mobx, mobx-react
+- mobx의 inject 및 React.memo로 최적화를 고려
+  > console.log('컴포넌트명')으로 확인
 
-## Available Scripts
+### makeObservable
 
-In the project directory, you can run:
+> 상태, 함수 등 역할을 명시적으로 지정
+> 최적화를 위해 명시해 주는 것이 권고됨
 
-### `yarn start`
+```js
+import { action, computed, makeObservable, observable } from "mobx";
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+class MarketStore {
+  // state
+  marketBasket = [];
+  // 선언부
+  constructor() {
+    makeObservable(this, {
+      marketBasket: observable,
+      addProduct: action,
+      delProduct: action,
+      totalCost: computed,
+    });
+  }
+  // action
+  addProduct = ({ id, name, price }) => {
+    const add = this.marketBasket.find((basket) => id === basket.id);
+    if (!add) {
+      this.marketBasket.push({
+        id,
+        name,
+        price,
+        count: 1,
+      });
+    } else {
+      add.count++;
+    }
+  };
+  delProduct = ({ id }) => {
+    this.marketBasket = this.marketBasket.filter((basket) => basket.id !== id);
+  };
+  // computed
+  get totalCost() {
+    return this.marketBasket.reduce(
+      (acc, curr) => acc + curr.price * curr.count,
+      0
+    );
+  }
+}
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 생성
 
-### `yarn test`
+- App.js
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```js
+import { Provider } from "mobx-react";
+import MarketStore from "./store/MarketStore";
 
-### `yarn build`
+// 스토어 생성
+const marketStore = new MarketStore();
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+function App() {
+  return (
+    <Provider market={marketStore}>
+      <Mart />
+    </Provider>
+  );
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- 컴포넌트에 주입도 가능
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```js
+<Mart market={marketStore} />
+```
 
-### `yarn eject`
+### 사용
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+> 부모 컴포넌트로부터 props로 받거나 inject 사용
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+import { inject, observer } from "mobx-react";
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+const Mart = ({ market }) => {
+  return <CardFooter>Total : {market.totalCost}</CardFooter>;
+};
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+// <Provider market={marketStore}> 주입한 이름으로 사용
+export default inject("market")(observer(Mart));
+```
 
-## Learn More
+> 특정 함수 또는 상태만 불러오기
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```js
+function Product({ addProduct }) {
+  return (
+    <Button
+      onClick={() =>
+        addProduct({
+          id,
+          name,
+          price,
+        })
+      }
+    >
+      담기
+    </Button>
+  );
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default inject(({ market }) => ({
+  addProduct: market.addProduct,
+}))(observer(Product));
+```
