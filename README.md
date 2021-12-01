@@ -80,6 +80,8 @@ function App() {
 ### 사용
 
 > 부모 컴포넌트로부터 props로 받거나 inject 사용
+> observer로 감싸주면 store의 변화에 따라 re-render가 이루어짐
+> 지켜보고 있게 된다
 
 ```js
 import { inject, observer } from "mobx-react";
